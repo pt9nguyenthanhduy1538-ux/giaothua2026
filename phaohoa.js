@@ -3,6 +3,7 @@
   // Optimized Canvas Fireworks Show
   // + City skyline layer (like reference image)
   // + Intro overlay: blurred at entry, click to unblur + play music
+  // + Fullscreen on button click
   // =========================
 
   const canvas = document.getElementById("c");
@@ -16,6 +17,38 @@
   const introOverlay = document.getElementById("introOverlay");
   const enterBtn = document.getElementById("enterBtn");
   const bgm = document.getElementById("bgm");
+
+  // ====== Fullscreen helpers ======
+  // Bạn có thể đổi fsTarget = canvas nếu muốn chỉ fullscreen canvas (tùy trình duyệt)
+  const fsTarget = document.documentElement;
+
+  function isFullscreen() {
+    return (
+      document.fullscreenElement ||
+      document.webkitFullscreenElement ||
+      document.msFullscreenElement
+    );
+  }
+
+  async function enterFullscreen() {
+    if (isFullscreen()) return;
+
+    const el = fsTarget;
+    try {
+      const req =
+        el.requestFullscreen ||
+        el.webkitRequestFullscreen ||
+        el.msRequestFullscreen;
+
+      if (req) {
+        const p = req.call(el);
+        if (p && typeof p.then === "function") await p;
+      }
+    } catch (e) {
+      // Một số máy/iOS có thể không cho fullscreen phần tử -> fail silently
+      console.warn("Fullscreen blocked:", e);
+    }
+  }
 
   function showIntro() {
     document.body.classList.add("locked");
@@ -60,8 +93,12 @@
 
   // End overlay
   const endOverlay = document.getElementById("endOverlay");
-  function showEndOverlay() { endOverlay?.classList.add("show"); }
-  function hideEndOverlay() { endOverlay?.classList.remove("show"); }
+  function showEndOverlay() {
+    endOverlay?.classList.add("show");
+  }
+  function hideEndOverlay() {
+    endOverlay?.classList.remove("show");
+  }
 
   // ===== Helpers =====
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -854,7 +891,7 @@
         textSize: 86,
         power: 1.1,
         anchorX: startX + gap * i,
-        anchorY: baseY
+        anchorY: baseY,
       });
       await sleep(2000);
     }
@@ -905,7 +942,7 @@
             spread: 0.65,
             topMin: 0.10,
             topVar: 0.55,
-            flightSteps: 58
+            flightSteps: 58,
           });
 
           done++;
@@ -923,11 +960,16 @@
     startBtn.disabled = false;
   }
 
-  // Start button
-  startBtn?.addEventListener("click", () => runShow());
+  // Start button (đã thêm fullscreen)
+  startBtn?.addEventListener("click", async () => {
+    await enterFullscreen();
+    runShow();
+  });
 
-  // Intro overlay "Enter" button: unblur + enable sound + play music + auto-start show
+  // Intro overlay "Enter" button: fullscreen + unblur + enable sound + play music + auto-start show
   enterBtn?.addEventListener("click", async () => {
+    await enterFullscreen();
+
     // Enable sound
     audioOn = true;
     soundBtn.textContent = "🔊 Tắt âm thanh";
