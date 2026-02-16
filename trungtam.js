@@ -1,8 +1,76 @@
-// trungtam.js (FULL + ENTRY GATE)
+// trungtam.js (FULL + ENTRY GATE + FULLSCREEN KEEP)
 // - Vào trang: mờ + đứng im + chưa phát nhạc
-// - Bấm nút giữa: mở khóa -> chạy toàn bộ hiệu ứng + phát nhạc
+// - Bấm nút giữa: mở khóa -> xin fullscreen -> chạy toàn bộ hiệu ứng + phát nhạc
+// - Các click/Enter sau đó: nếu đang muốn fullscreen mà bị thoát, sẽ xin fullscreen lại
 
 (() => {
+  // =========================
+  // FULLSCREEN HELPERS
+  // =========================
+  const FS_KEY = "tet_fs_wanted";
+
+  function safeSSSet(k, v) { try { sessionStorage.setItem(k, v); } catch {} }
+  function safeSSGet(k) { try { return sessionStorage.getItem(k); } catch { return null; } }
+
+  function isFullscreen() {
+    return !!(
+      document.fullscreenElement ||
+      document.webkitFullscreenElement ||
+      document.msFullscreenElement
+    );
+  }
+
+  function requestFullscreen() {
+    const el = document.documentElement;
+    const req =
+      el.requestFullscreen ||
+      el.webkitRequestFullscreen ||
+      el.msRequestFullscreen;
+
+    if (!req) return Promise.reject(new Error("Fullscreen not supported"));
+    try {
+      const p = req.call(el);
+      return p && typeof p.then === "function" ? p : Promise.resolve();
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+
+  function wantFullscreenOn() {
+    safeSSSet(FS_KEY, "1");
+  }
+
+  function ensureFullscreen() {
+    if (safeSSGet(FS_KEY) !== "1") return;
+    if (isFullscreen()) return;
+    requestFullscreen().catch(() => {});
+  }
+
+  // Nếu tab đã “muốn fullscreen”, thì mọi click/Enter/Space sẽ xin fullscreen lại (nếu đang bị thoát)
+  function setupKeepFullscreen() {
+    if (safeSSGet(FS_KEY) !== "1") return;
+
+    // pointerdown: chắc ăn hơn click trên mobile
+    window.addEventListener(
+      "pointerdown",
+      () => ensureFullscreen(),
+      { capture: true, passive: true }
+    );
+
+    window.addEventListener(
+      "keydown",
+      (e) => {
+        if (e.key === "Enter" || e.key === " ") ensureFullscreen();
+      },
+      { capture: true }
+    );
+  }
+
+  setupKeepFullscreen();
+
+  // =========================
+  // ENTRY GATE
+  // =========================
   const gate = document.getElementById("entryGate");
   const entryBtn = document.getElementById("entryBtn");
   const bgm = document.getElementById("bgm");
@@ -15,6 +83,10 @@
   function unlock() {
     if (started) return;
     started = true;
+
+    // 0) Fullscreen (phải nằm trong user gesture)
+    wantFullscreenOn();
+    ensureFullscreen();
 
     // 1) Fade gate
     if (gate) {
@@ -103,6 +175,8 @@
       if (!modal) return;
       modal.classList.add("show");
       modal.setAttribute("aria-hidden", "false");
+      // nếu đang muốn fullscreen mà bị thoát, mở modal cũng xin lại luôn
+      ensureFullscreen();
     }
     function closeModal() {
       if (!modal) return;
@@ -113,6 +187,7 @@
 
     controls.forEach(a => {
       a.addEventListener("click", () => {
+        ensureFullscreen();
         const key = a.getAttribute("data-key");
         setDone(key);
         refreshUI();
@@ -162,6 +237,8 @@
         modalCard.appendChild(goBtn);
 
         goBtn.addEventListener("click", () => {
+          ensureFullscreen();
+          wantFullscreenOn(); // giữ “ý định fullscreen” cho trang kế tiếp (nếu trang kế tiếp cũng có script xin fullscreen)
           resetProgress();
           window.location.href = "okhoa.html";
         });
@@ -188,6 +265,7 @@
     }
 
     loveBtn?.addEventListener("click", () => {
+      ensureFullscreen();
       const done = countDone();
       if (done < 3) {
         showNotReadyModal();
@@ -196,8 +274,8 @@
       showSuccessModal();
     });
 
-    modalCloseBtn?.addEventListener("click", closeModal);
-    modalBackdrop?.addEventListener("click", closeModal);
+    modalCloseBtn?.addEventListener("click", () => { ensureFullscreen(); closeModal(); });
+    modalBackdrop?.addEventListener("click", () => { ensureFullscreen(); closeModal(); });
 
     refreshUI();
 
@@ -597,3 +675,4 @@
     start();
   }
 })();
+
