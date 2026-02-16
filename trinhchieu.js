@@ -1,4 +1,4 @@
-const presetTimeString = "16:28"; // HH:MM
+const presetTimeString = "16:43"; // HH:MM
 
 const leftDoor = document.getElementById('leftDoor');
 const rightDoor = document.getElementById('rightDoor');
@@ -25,6 +25,9 @@ const rotateOverlay = document.getElementById('rotateOverlay');
 
 let presetDate = null;
 let triggered = false;
+
+// ✅ NEW: tới giờ thì "đánh dấu", đợi xoay ngang mới bung
+let pendingUnlock = false;
 
 const doorDurationMs = 1900;
 
@@ -67,10 +70,36 @@ function requestFullscreen(){
 
 /* ---------- Orientation gate (bắt xoay ngang) ---------- */
 function isLandscape(){
-  // ưu tiên matchMedia orientation nếu có
   const mq = window.matchMedia?.("(orientation: landscape)");
   if (mq && typeof mq.matches === "boolean") return mq.matches;
   return window.innerWidth > window.innerHeight;
+}
+
+// ✅ NEW: ẩn overlay + bỏ lock để nhìn thấy hiệu ứng
+function revealScene(){
+  document.body.classList.remove('is-locked');
+
+  activateOverlay?.classList.add('hide');
+  activateOverlay?.setAttribute('aria-hidden','true');
+
+  rotateOverlay?.classList.add('hide');
+  rotateOverlay?.setAttribute('aria-hidden','true');
+}
+
+// ✅ NEW: nếu đã tới giờ thì bung khi đủ điều kiện (đang ngang)
+function tryStartUnlock(){
+  if(!pendingUnlock) return;
+
+  // nếu chưa ngang thì giữ rotate overlay để nhắc xoay
+  if(!isLandscape()){
+    rotateOverlay?.classList.remove('hide');
+    rotateOverlay?.setAttribute('aria-hidden','false');
+    return;
+  }
+
+  pendingUnlock = false;
+  revealScene();
+  startUnlockSequence();
 }
 
 function setRotateState(){
@@ -96,6 +125,9 @@ function setRotateState(){
       if(activateBtn) activateBtn.disabled = false;
     }
   }
+
+  // ✅ NEW: xoay ngang xong thì thử bung ngay (nếu tới giờ)
+  tryStartUnlock();
 }
 
 /* ---------- Time helpers ---------- */
@@ -103,7 +135,10 @@ function computePreset(){
   const [h,m] = presetTimeString.split(':').map(n => parseInt(n,10));
   const now = new Date();
   let tgt = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h||0, m||0, 0, 0);
-  if (tgt <= now) tgt.setDate(tgt.getDate()+1);
+
+  // ✅ FIX: cho trễ < 60s vẫn tính hôm nay, đừng dời sang ngày mai
+  if (now - tgt > 59_000) tgt.setDate(tgt.getDate()+1);
+
   return tgt;
 }
 function updateClockDisplay(now = new Date()){
@@ -414,9 +449,11 @@ function startUnlockSequence(){
 function updateAndCheck(){
   const now = new Date();
   updateClockDisplay(now);
+
   if(!triggered && presetDate && now >= presetDate){
     triggered = true;
-    startUnlockSequence();
+    pendingUnlock = true;   // ✅ NEW: đánh dấu tới giờ
+    tryStartUnlock();       // ✅ NEW: nếu đang ngang thì bung ngay
   }
 }
 
@@ -428,7 +465,7 @@ function unlockApp(){
   activateOverlay?.classList.add('hide');
   activateOverlay?.setAttribute('aria-hidden','true');
 
-  // bật nhạc
+  // bật nhạc (autoplay có thể bị chặn, nhưng click handler thì OK)
   if(bgm){
     try{
       bgm.volume = 0.9;
@@ -443,7 +480,6 @@ function unlockApp(){
 
 /* ---------- init ---------- */
 function init(){
-  // gate xoay ngang ngay từ đầu
   setRotateState();
   addEventListener('resize', setRotateState);
   addEventListener('orientationchange', setRotateState);
@@ -451,6 +487,7 @@ function init(){
   presetDate = computePreset();
   updateAndCheck();
   setInterval(updateAndCheck, 1000);
+
   requestAnimationFrame(neonLoop);
 
   initStars();
@@ -478,15 +515,11 @@ init();
 
 /* ---------- Activate button ---------- */
 activateBtn?.addEventListener('click', ()=> {
-  // nếu chưa ngang thì không cho
   if(!isLandscape()) return;
 
   beep(980,60,"triangle", isMobile ? 0.018 : 0.03);
 
-  // vào toàn màn hình (phải nằm trong click handler)
   requestFullscreen();
-
-  // mở khóa app
   unlockApp();
 });
 
@@ -495,5 +528,3 @@ enterBtn?.addEventListener('click', ()=> {
   beep(980,60,"triangle", isMobile ? 0.018 : 0.03);
   setTimeout(()=>window.location.href = 'trungtam.html', 80);
 });
-
-
