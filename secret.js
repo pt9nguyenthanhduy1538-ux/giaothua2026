@@ -48,6 +48,30 @@ const cardRate = $("#cardRate");
 const cardSys = $("#cardSys");
 const readyBtn = $("#readyBtn");
 
+/* ======================================================
+   Fullscreen helper
+   - gọi trong click user-gesture
+   - tự bỏ qua nếu browser không cho / không hỗ trợ
+====================================================== */
+async function enterFullscreen(){
+  try{
+    const el = document.documentElement;
+
+    const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+    if(fsEl) return;
+
+    if(el.requestFullscreen){
+      await el.requestFullscreen({ navigationUI: "hide" }).catch(()=>{});
+      return;
+    }
+    // Safari iOS/macOS (một số bản)
+    if(el.webkitRequestFullscreen){
+      el.webkitRequestFullscreen();
+      return;
+    }
+  }catch(e){}
+}
+
 const state = {
   step: 1,
   mustName: ["ư","n","g"],
@@ -74,7 +98,6 @@ function moveHandToStep(n){
   const titleEl = (n===1)?t1:(n===2)?tDob:(n===3)?t2:t3;
   const pr = panel.getBoundingClientRect();
   const tr = titleEl.getBoundingClientRect();
-  const top = (tr.top - pr.top) + 80; // offset theo panel scroll
   // do hand fixed, cần cộng scrollTop của panel
   const y = panel.scrollTop + (tr.top - pr.top) + 92;
   const panelTop = pr.top; // vị trí panel trên màn hình
@@ -124,13 +147,18 @@ function updateUI(){
   if(state.step===4) confirmHint.textContent = "Bước 4: phải chọn “tuyệt vời” để mở Xác nhận.";
 }
 
-openOverlay.addEventListener("click", ()=>{
+/* ===== OPEN OVERLAY (kèm fullscreen) ===== */
+openOverlay.addEventListener("click", async ()=>{
+  // cố gắng vào fullscreen trước (đảm bảo là user-gesture)
+  await enterFullscreen();
+
   overlay.classList.add("isOpen");
   setTimeout(()=>{
     resizeBg();
     setStep(state.step);
   }, 0);
 });
+
 overlay.addEventListener("click", ()=>{ /* no close */ });
 panel.addEventListener("scroll", ()=>moveHandToStep(state.step), {passive:true});
 
@@ -240,9 +268,10 @@ confirmBtn.addEventListener("click", ()=>{
   setTimeout(()=> overlay.classList.remove("isOpen"), 220);
 });
 
-/* Ready -> go to another file */
-readyBtn.addEventListener("click", ()=>{
+/* Ready -> fullscreen (nếu chưa) -> go to another file */
+readyBtn.addEventListener("click", async ()=>{
   if(!state.readyEnabled) return;
+  await enterFullscreen();
   window.location.href = "secretmodel.html";
 });
 
