@@ -1,4 +1,4 @@
-const presetTimeString = "16:28"; // HH:MM (vẫn giữ nếu bạn muốn auto tới giờ tự bung)
+const presetTimeString = "16:26"; // HH:MM (vẫn giữ để auto mở nếu muốn)
 
 const leftDoor = document.getElementById('leftDoor');
 const rightDoor = document.getElementById('rightDoor');
@@ -25,7 +25,6 @@ const rotateOverlay = document.getElementById('rotateOverlay');
 
 let presetDate = null;
 let triggered = false;
-let pendingUnlock = false;
 
 const doorDurationMs = 1900;
 
@@ -59,41 +58,18 @@ function requestFullscreen(){
 
     if (fn) fn.call(el);
 
+    // thử khóa xoay ngang (nếu hỗ trợ)
     setTimeout(() => {
       try{ screen.orientation?.lock?.('landscape'); }catch(e){}
     }, 200);
   }catch(e){}
 }
 
-/* ---------- Orientation gate ---------- */
+/* ---------- Orientation gate (bắt xoay ngang) ---------- */
 function isLandscape(){
   const mq = window.matchMedia?.("(orientation: landscape)");
   if (mq && typeof mq.matches === "boolean") return mq.matches;
   return window.innerWidth > window.innerHeight;
-}
-
-function revealScene(){
-  document.body.classList.remove('is-locked');
-
-  activateOverlay?.classList.add('hide');
-  activateOverlay?.setAttribute('aria-hidden','true');
-
-  rotateOverlay?.classList.add('hide');
-  rotateOverlay?.setAttribute('aria-hidden','true');
-}
-
-function tryStartUnlock(){
-  if(!pendingUnlock) return;
-
-  if(!isLandscape()){
-    rotateOverlay?.classList.remove('hide');
-    rotateOverlay?.setAttribute('aria-hidden','false');
-    return;
-  }
-
-  pendingUnlock = false;
-  revealScene();
-  startUnlockSequence();
 }
 
 function setRotateState(){
@@ -116,9 +92,6 @@ function setRotateState(){
       if(activateBtn) activateBtn.disabled = false;
     }
   }
-
-  // nếu đang đợi bung (tới giờ) thì xoay ngang xong bung luôn
-  tryStartUnlock();
 }
 
 /* ---------- Time helpers ---------- */
@@ -126,10 +99,7 @@ function computePreset(){
   const [h,m] = presetTimeString.split(':').map(n => parseInt(n,10));
   const now = new Date();
   let tgt = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h||0, m||0, 0, 0);
-
-  // cho trễ < 60s vẫn tính hôm nay
-  if (now - tgt > 59_000) tgt.setDate(tgt.getDate()+1);
-
+  if (tgt <= now) tgt.setDate(tgt.getDate()+1);
   return tgt;
 }
 function updateClockDisplay(now = new Date()){
@@ -436,26 +406,24 @@ function startUnlockSequence(){
   }, doorDurationMs + 700);
 }
 
-/* ---------- preset check (auto theo giờ) ---------- */
+/* ---------- preset check (auto mở theo giờ nếu muốn) ---------- */
 function updateAndCheck(){
   const now = new Date();
   updateClockDisplay(now);
-
   if(!triggered && presetDate && now >= presetDate){
     triggered = true;
-    pendingUnlock = true;
-    tryStartUnlock();
+    startUnlockSequence();
   }
 }
 
 /* ---------- unlock app ---------- */
-function unlockApp({ playMusic = true } = {}){
+function unlockApp(){
   document.body.classList.remove('is-locked');
 
   activateOverlay?.classList.add('hide');
   activateOverlay?.setAttribute('aria-hidden','true');
 
-  if(playMusic && bgm){
+  if(bgm){
     try{
       bgm.volume = 0.9;
       const p = bgm.play();
@@ -466,16 +434,24 @@ function unlockApp({ playMusic = true } = {}){
   setTimeout(() => window.dispatchEvent(new Event('resize')), 250);
 }
 
+/* ---------- FORCE OPEN NOW (nút “Tới Giờ Mở Cửa”) ---------- */
+function forceOpenNow(){
+  if(triggered) return;
+  // giả lập “đã tới giờ”
+  presetDate = new Date(Date.now() - 1000);
+  triggered = true;
+  startUnlockSequence();
+}
+
 /* ---------- init ---------- */
 function init(){
   setRotateState();
   addEventListener('resize', setRotateState);
   addEventListener('orientationchange', setRotateState);
 
-  presetDate = computePreset();
+  presetDate = computePreset();         // vẫn giữ auto mở theo giờ nếu không bấm nút
   updateAndCheck();
   setInterval(updateAndCheck, 1000);
-
   requestAnimationFrame(neonLoop);
 
   initStars();
@@ -501,36 +477,19 @@ function init(){
 }
 init();
 
-/* ---------- "Đoán Giao Thừa" => vào fullscreen + hiện hiệu ứng ngay ---------- */
+/* ---------- BUTTON: tới giờ + mở cửa ---------- */
 activateBtn?.addEventListener('click', ()=> {
-  // bắt buộc ngang mới cho
   if(!isLandscape()) return;
-
-  // đánh dấu: các trang sau sẽ xin fullscreen lại
-  try{ sessionStorage.setItem('wantFullscreen','1'); }catch(e){}
 
   beep(980,60,"triangle", isMobile ? 0.018 : 0.03);
 
-  // vào toàn màn hình (phải trong click)
   requestFullscreen();
-
-  // ẩn overlay + bỏ blur + bật nhạc
-  unlockApp({ playMusic: true });
-
-  // ✅ quan trọng: bấm nút là bung hiệu ứng ngay
-  if(!triggered){
-    triggered = true;
-    pendingUnlock = false;
-    startUnlockSequence();
-  }
+  unlockApp();
+  forceOpenNow(); // <<< bấm là mở cửa liền
 });
 
 /* ENTER BUTTON -> trungtam.html */
 enterBtn?.addEventListener('click', ()=> {
   beep(980,60,"triangle", isMobile ? 0.018 : 0.03);
-
-  // giữ cờ để trang sau xin fullscreen lại
-  try{ sessionStorage.setItem('wantFullscreen','1'); }catch(e){}
-
   setTimeout(()=>window.location.href = 'trungtam.html', 80);
 });
