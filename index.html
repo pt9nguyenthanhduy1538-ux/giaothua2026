@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Cửa Lễ — Ultra Tết</title>
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="trinhchieu.css">
+
+  <!-- ✅ chống cache GitHub: tăng v=... mỗi lần sửa -->
+  <link rel="stylesheet" href="trinhchieu.css?v=3">
 </head>
 
 <body class="is-locked">
-  <!-- Nhạc nền (đặt file tại assets/nhac.mp3) -->
   <audio id="bgm" src="nghekenam90s.mp3" preload="auto" loop></audio>
 
-  <!-- Scene -->
   <div id="app">
     <div class="border top" aria-hidden="true"></div>
 
@@ -88,7 +88,7 @@
     <div class="border bottom" aria-hidden="true"></div>
   </div>
 
-  <!-- 1) Overlay bắt xoay ngang (ưu tiên cao nhất) -->
+  <!-- 1) Overlay bắt xoay ngang -->
   <div class="rotate-overlay hide" id="rotateOverlay" aria-hidden="true">
     <div class="rotate-card" role="dialog" aria-modal="true" aria-label="Xoay ngang màn hình">
       <div class="rotate-icon">📱↔️</div>
@@ -97,16 +97,23 @@
     </div>
   </div>
 
-  <!-- 2) Overlay kích hoạt (khi đã ngang) -->
+  <!-- 2) Overlay kích hoạt -->
   <div class="activate-overlay" id="activateOverlay" aria-hidden="false">
     <div class="activate-card" role="dialog" aria-modal="true" aria-label="Kích hoạt">
       <div class="activate-title">Đoán Giao Thừa</div>
       <div class="activate-sub"></div>
+
       <button class="activate-btn" id="activateBtn" type="button">Đoán Giao Thừa</button>
+
+      <!-- ✅ Nút ép -->
+      <button class="force-btn" id="forceBtn" type="button">ÉP KÍCH HOẠT</button>
+      <div class="force-hint">Dùng để test / bypass thời gian + xoay ngang</div>
+
       <div class="activate-hint"></div>
     </div>
   </div>
 
-  <script src="trinhchieu.js"></script>
+  <!-- ✅ chống cache GitHub: tăng v=... mỗi lần sửa -->
+  <script src="trinhchieu.js?v=3"></script>
 </body>
 </html>
