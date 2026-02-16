@@ -1,4 +1,4 @@
-const presetTimeString = "16:43"; // HH:MM
+const presetTimeString = "16:45"; // HH:MM
 
 const leftDoor = document.getElementById('leftDoor');
 const rightDoor = document.getElementById('rightDoor');
@@ -528,3 +528,4 @@ enterBtn?.addEventListener('click', ()=> {
   beep(980,60,"triangle", isMobile ? 0.018 : 0.03);
   setTimeout(()=>window.location.href = 'trungtam.html', 80);
 });
+
