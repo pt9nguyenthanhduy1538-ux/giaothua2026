@@ -1,6 +1,6 @@
-// trungtam.js (FULL + ENTRY GATE)
+// trungtam.js (FULL + ENTRY GATE + FULLSCREEN ON UNLOCK)
 // - Vào trang: mờ + đứng im + chưa phát nhạc
-// - Bấm nút giữa: mở khóa -> chạy toàn bộ hiệu ứng + phát nhạc
+// - Bấm nút giữa: mở khóa -> vào toàn màn hình + chạy toàn bộ hiệu ứng + phát nhạc
 
 (() => {
   const gate = document.getElementById("entryGate");
@@ -12,9 +12,34 @@
   // focus cho “ngầu” + tiện bấm Enter
   setTimeout(() => entryBtn?.focus(), 60);
 
+  // ===== FULLSCREEN (gọi trong user-gesture) =====
+  async function enterFullscreen() {
+    try {
+      // đã fullscreen rồi thì thôi
+      if (document.fullscreenElement || document.webkitFullscreenElement) return;
+
+      const el = document.documentElement;
+
+      const req =
+        el.requestFullscreen ||
+        el.webkitRequestFullscreen || // Safari/Chrome iOS (hỗ trợ hạn chế), Safari desktop
+        el.mozRequestFullScreen ||
+        el.msRequestFullscreen;
+
+      if (req) {
+        const p = req.call(el);
+        // Một số browser trả Promise, một số không
+        if (p && typeof p.catch === "function") await p.catch(() => {});
+      }
+    } catch (_) {}
+  }
+
   function unlock() {
     if (started) return;
     started = true;
+
+    // 0) Vào toàn màn hình (phải nằm trong click/gesture)
+    enterFullscreen();
 
     // 1) Fade gate
     if (gate) {
