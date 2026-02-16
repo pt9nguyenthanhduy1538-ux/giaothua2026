@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cửa Lễ — Ultra Tết</title>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="trinhchieu.css">
+</head>
+
+<body class="is-locked">
+  <!-- Nhạc nền (đặt file tại assets/nhac.mp3) -->
+  <audio id="bgm" src="nghekenam90s.mp3" preload="auto" loop></audio>
+
+  <!-- Scene -->
+  <div id="app">
+    <div class="border top" aria-hidden="true"></div>
+
+    <div class="vignette" aria-hidden="true"></div>
+    <div class="film-grain" aria-hidden="true"></div>
+    <div class="tet-motifs" aria-hidden="true"></div>
+
+    <!-- LEFT DOOR -->
+    <div class="door left" id="leftDoor">
+      <div class="decoration"></div>
+      <div class="door-shine" aria-hidden="true"></div>
+
+      <div class="circle l1"></div>
+      <div class="circle l2"></div>
+      <div class="circle l3"></div>
+      <div class="circle l4"></div>
+      <div class="circle l5"></div>
+      <div class="circle l6"></div>
+
+      <div class="firecracker fc-left" aria-hidden="true"></div>
+      <div class="banner vertical left-banner">An<br/>Khang<br/>Thịnh<br/>Vượng</div>
+    </div>
+
+    <!-- RIGHT DOOR -->
+    <div class="door right" id="rightDoor">
+      <div class="decoration"></div>
+      <div class="door-shine" aria-hidden="true"></div>
+
+      <div class="circle r1"></div>
+      <div class="circle r2"></div>
+      <div class="circle r3"></div>
+      <div class="circle r4"></div>
+      <div class="circle r5"></div>
+      <div class="circle r6"></div>
+
+      <div class="firecracker fc-right" aria-hidden="true"></div>
+      <div class="banner vertical right-banner">Vạn<br/>Sự<br/>Như<br/>Ý</div>
+    </div>
+
+    <!-- GAP -->
+    <div class="gap" id="gap" aria-hidden="true">
+      <div class="gap-beam" aria-hidden="true"></div>
+      <div class="gap-beam beam2" aria-hidden="true"></div>
+      <div class="gap-sweep" aria-hidden="true"></div>
+
+      <canvas id="starsCanvas" aria-hidden="true"></canvas>
+      <div class="gap-glow" id="gapGlow"></div>
+
+      <div class="gold-mist" aria-hidden="true"></div>
+      <canvas id="dustCanvas" aria-hidden="true"></canvas>
+      <canvas id="glitterCanvas" aria-hidden="true"></canvas>
+      <canvas id="fireworksCanvas" aria-hidden="true"></canvas>
+    </div>
+
+    <!-- LOCK BOX -->
+    <div class="lock-box" id="lockBox" aria-hidden="true">
+      <div class="lock" id="lock">
+        <div class="lock-ring" id="lockRing" aria-hidden="true"></div>
+        <div class="spark-ring" aria-hidden="true"></div>
+        <div class="padlock" id="padlock">🔒</div>
+        <div class="lock-time" id="lockTime">00:00:00</div>
+      </div>
+
+      <button id="enterBtn" class="enter-btn" aria-hidden="true">
+        <span class="btn-glow" aria-hidden="true"></span>
+        <span class="btn-text">Sẵn sàng</span>
+        <span class="btn-spark" aria-hidden="true"></span>
+      </button>
+
+      <div class="btn-burst" id="btnBurst" aria-hidden="true"></div>
+    </div>
+
+    <div class="border bottom" aria-hidden="true"></div>
+  </div>
+
+  <!-- 1) Overlay bắt xoay ngang (ưu tiên cao nhất) -->
+  <div class="rotate-overlay hide" id="rotateOverlay" aria-hidden="true">
+    <div class="rotate-card" role="dialog" aria-modal="true" aria-label="Xoay ngang màn hình">
+      <div class="rotate-icon">📱↔️</div>
+      <div class="rotate-title">Xoay ngang màn hình</div>
+      <div class="rotate-sub">Hãy xoay sang chế độ ngang để bắt đầu.</div>
+    </div>
+  </div>
+
+  <!-- 2) Overlay kích hoạt (khi đã ngang) -->
+  <div class="activate-overlay" id="activateOverlay" aria-hidden="false">
+    <div class="activate-card" role="dialog" aria-modal="true" aria-label="Kích hoạt">
+      <div class="activate-title">Đoán Giao Thừa</div>
+      <div class="activate-sub"></div>
+      <button class="activate-btn" id="activateBtn" type="button">Đoán Giao Thừa</button>
+      <div class="activate-hint"></div>
+    </div>
+  </div>
+
+  <script src="trinhchieu.js"></script>
+</body>
+</html>

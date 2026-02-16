@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <title>pháo hoa</title>
+  <link rel="stylesheet" href="phaohoa.css" />
+</head>
+<body class="locked">
+  <canvas id="c"></canvas>
+
+  <div id="introOverlay" class="introOverlay show" role="dialog" aria-modal="true" aria-label="Bắt đầu">
+    <div class="panel">
+      <div class="title">pháo hoa</div>
+      <div class="desc">
+        <br />
+        
+      </div>
+      <button class="btn start big" id="enterBtn" type="button">▶ Vào xem pháo hoa</button>
+      <div class="sub"></div>
+    </div>
+  </div>
+
+  <div id="endOverlay" aria-hidden="true">
+    <div class="endText">hết ời</div>
+  </div>
+
+  <div class="hud">
+    <a class="btn back" href="trungtam.html">← Trở về</a>
+    <button class="btn sound" id="soundBtn" type="button">🔇 Bật âm thanh</button>
+    <button class="btn start" id="startBtn" type="button">▶ Bắt đầu trình chiếu</button>
+  </div>
+
+  <div class="hint"></div>
+
+  <audio id="bgm" src="diepkhucmuaxuan.mp3" preload="auto" loop></audio>
+
+  <script src="phaohoa.js"></script>
+</body>
+</html>

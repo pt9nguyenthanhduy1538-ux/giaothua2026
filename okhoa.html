@@ -1,0 +1,104 @@
+<!-- index.html (hoặc file HTML của bạn) -->
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>LOCK</title>
+  <link rel="stylesheet" href="okhoa.css" />
+</head>
+<body class="locked">
+  <canvas id="fxCanvas"></canvas>
+
+  <!-- ✅ Nhạc nền (đổi tên file cho đúng) -->
+  <audio id="bgm" src="tungngayyeuem.mp3" preload="auto" loop></audio>
+
+  <main class="app" id="app">
+    <header class="top">
+      <div class="decor">
+        <div class="cord"></div>
+        <div class="lantern l1"></div>
+        <div class="seal">NEW YEAR</div>
+        <div class="lantern l2"></div>
+        <div class="spark s1"></div>
+        <div class="spark s2"></div>
+        <div class="spark s3"></div>
+      </div>
+    </header>
+
+    <section class="stage">
+      <div class="frame">
+        <div class="lock-wrap" id="lockWrap">
+          <div class="lock-shadow"></div>
+
+          <div class="lock" id="lock">
+            <div class="lock-ring"></div>
+            <div class="lock-body">
+              <div class="keyhole"></div>
+            </div>
+          </div>
+
+          <button class="heart" id="heart" type="button" aria-label="Heart" disabled>
+            <span class="heart-glow"></span>
+            <span class="heart-shape"></span>
+          </button>
+        </div>
+
+        <div class="panel">
+          <div class="display">
+            <div class="display-label">PASS</div>
+            <div class="display-value" id="displayValue"></div>
+            <div class="display-caret" id="caret"></div>
+          </div>
+
+          <div class="controls">
+            <!-- ✅ lúc đầu khoá -->
+            <button class="btn ghost" id="btnBack" type="button" disabled>Xoá</button>
+            <button class="btn" id="btnEnter" type="button" disabled>Mở</button>
+          </div>
+
+          <div class="alphabet" id="alphabet" aria-label="Alphabet Board"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    sai rồi bé ơi nhập lại đi
+  </div>
+
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal-box" id="modalBox">
+      <div class="modal-title">lỗi</div>
+      <div class="modal-body">
+        <ul>
+          <li>⚠️ phát hiện bất thường</li>
+          <li>⚠️ không cố thoát khỏi tiến trình</li>
+          <li>⚠️ tiếp tục có thể gây nguy hiểm cho thiết bị</li>
+        </ul>
+      </div>
+      <button class="btn danger" id="btnContinue" type="button">tiếp tục</button>
+    </div>
+  </div>
+
+  <div class="fade" id="fade"></div>
+
+  <!-- ✅ Overlay mở khóa -->
+  <div class="gate" id="gate" aria-hidden="false">
+    <div class="gate-box">
+      <div class="gate-badge">suỵt</div>
+      <div class="gate-title"></div>
+      <div class="gate-sub"></div>
+
+      <button class="gate-btn" id="btnStart" type="button">
+        gỡ niêm phong
+      </button>
+
+      <div class="gate-hint"></div>
+    </div>
+    <div class="gate-glow"></div>
+  </div>
+
+  <script src="okhoa.js"></script>
+</body>
+</html>

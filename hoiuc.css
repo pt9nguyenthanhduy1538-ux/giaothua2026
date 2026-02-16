@@ -1,0 +1,125 @@
+/* hoiuc.css */
+:root{
+  --bg:#01010a;
+  --fg:rgba(255,255,255,.86);
+  --stroke:rgba(255,255,255,.12);
+  --btn:rgba(255,255,255,.07);
+  --btn2:rgba(255,255,255,.14);
+}
+*{ box-sizing:border-box; }
+html,body{ margin:0; height:100%; overflow:hidden; background:var(--bg); }
+canvas{ display:block; width:100vw; height:100vh; }
+
+.controls{
+  position:fixed;
+  right:14px; top:14px;
+  display:flex; gap:10px; align-items:center;
+  z-index:10;
+}
+
+.btn{
+  appearance:none;
+  border:1px solid var(--stroke);
+  background:var(--btn);
+  color:var(--fg);
+  padding:10px 12px;
+  border-radius:12px;
+  font:12px/1 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  text-decoration:none;
+  cursor:pointer;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 28px rgba(0,0,0,.45);
+  transition: transform .15s ease, background .15s ease, border-color .15s ease;
+}
+.btn:hover{ background:var(--btn2); border-color: rgba(255,255,255,.18); transform: translateY(-1px); }
+.btn:active{ transform: translateY(0px) scale(0.99); }
+.btn.ghost{ color:rgba(255,255,255,.68); background: rgba(255,255,255,.05); }
+
+@media (max-width: 520px){
+  .controls{ left:14px; right:auto; top:auto; bottom:14px; flex-wrap:wrap; }
+}
+
+/* =========================
+   [ADD] LOCK OVERLAY + BLUR
+   (đặt ở cuối file như yêu cầu)
+   ========================= */
+
+body.locked canvas,
+body.locked .controls{
+  filter: blur(8px) brightness(0.65);
+  transform: scale(1.01);
+  user-select: none;
+}
+
+/* khoá tương tác canvas */
+body.locked canvas{ pointer-events: none; }
+
+/* khoá phần lớn controls, nhưng cho soundBtn bấm được để "mở khóa" theo yêu cầu */
+body.locked .controls{ pointer-events: auto; }
+body.locked .controls > *{ pointer-events: none; }
+body.locked #soundBtn{ pointer-events: auto; }
+
+.bootOverlay{
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: grid;
+  place-items: center;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: opacity .25s ease;
+  pointer-events: none; /* cho click xuyên qua, trừ phần card */
+}
+
+.bootOverlay.hide{
+  opacity: 0;
+}
+
+.bootCard{
+  pointer-events: auto; /* bật click cho nút */
+  width: min(520px, calc(100vw - 32px));
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(10,10,18,0.55);
+  border-radius: 18px;
+  padding: 18px 18px 14px;
+  box-shadow: 0 18px 60px rgba(0,0,0,.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  text-align: center;
+  color: rgba(255,255,255,.9);
+}
+
+.bootTitle{
+  font: 700 18px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  letter-spacing: .2px;
+  margin-bottom: 12px;
+}
+
+.bootBtn{
+  appearance: none;
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.10);
+  color: rgba(255,255,255,.92);
+  padding: 12px 14px;
+  border-radius: 14px;
+  cursor: pointer;
+  font: 600 14px/1 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  box-shadow: 0 12px 30px rgba(0,0,0,.45);
+  transition: transform .15s ease, background .15s ease, border-color .15s ease;
+  width: 100%;
+}
+
+.bootBtn:hover{
+  background: rgba(255,255,255,.14);
+  border-color: rgba(255,255,255,.26);
+  transform: translateY(-1px);
+}
+
+.bootBtn:active{ transform: translateY(0) scale(.99); }
+
+.bootHint{
+  margin-top: 10px;
+  font: 12px/1.35 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: rgba(255,255,255,.70);
+}

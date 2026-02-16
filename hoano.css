@@ -1,0 +1,142 @@
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+}
+
+#c {
+  width: 100vw;
+  height: 100vh;
+  display: block;
+}
+
+/* UI */
+.ui{
+  position: fixed;
+  left: 16px;
+  top: 16px;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  color: rgba(255,255,255,0.8);
+  user-select: none;
+  z-index: 10;
+}
+
+.btns{
+  display:flex;
+  gap: 10px;
+}
+
+.btn{
+  pointer-events: auto;
+  cursor: pointer;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.30);
+  color: rgba(255,255,255,0.85);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 18px rgba(160,255,220,0.10);
+  transition: transform .12s ease, background .12s ease, border-color .12s ease;
+}
+
+.btn:hover{
+  transform: translateY(-1px);
+  background: rgba(0,0,0,0.42);
+  border-color: rgba(160,255,220,0.22);
+}
+.btn:active{
+  transform: translateY(0px) scale(0.99);
+}
+
+/* ====== LOCKED BLUR (mở trang bị mờ) ====== */
+body.locked #c,
+body.locked .ui{
+  filter: blur(10px) brightness(0.75);
+  transform: scale(1.01);
+  transition: filter .35s ease, transform .35s ease;
+}
+
+body:not(.locked) #c,
+body:not(.locked) .ui{
+  filter: blur(0px) brightness(1);
+  transform: scale(1);
+  transition: filter .35s ease, transform .35s ease;
+}
+
+body.locked .ui{
+  pointer-events: none; /* khóa bấm nút khi chưa start */
+}
+
+/* ====== START OVERLAY ====== */
+.startOverlay{
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: grid;
+  place-items: center;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(10px);
+  transition: opacity .35s ease, visibility .35s ease;
+}
+
+.startOverlay.hide{
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.startCard{
+  width: min(520px, calc(100vw - 32px));
+  padding: 18px 18px 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(0,0,0,0.35);
+  box-shadow: 0 0 30px rgba(160,255,220,0.12);
+  color: rgba(255,255,255,0.9);
+  text-align: center;
+}
+
+.startTitle{
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.startSub{
+  margin-top: 10px;
+  opacity: 0.85;
+  font-size: 13px;
+}
+
+.startBtn{
+  margin-top: 14px;
+  cursor: pointer;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(0,0,0,0.42);
+  color: rgba(255,255,255,0.92);
+  box-shadow: 0 0 18px rgba(160,255,220,0.10);
+  transition: transform .12s ease, background .12s ease, border-color .12s ease;
+}
+
+.startBtn:hover{
+  transform: translateY(-1px);
+  background: rgba(0,0,0,0.55);
+  border-color: rgba(160,255,220,0.24);
+}
+
+.startBtn:active{
+  transform: translateY(0px) scale(0.99);
+}
+
+.startHint{
+  margin-top: 10px;
+  font-size: 12px;
+  opacity: 0.65;
+}

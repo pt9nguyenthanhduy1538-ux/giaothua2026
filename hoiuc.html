@@ -1,0 +1,36 @@
+<!-- index.html -->
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>2010 → 2026 | Neon Timeline 🍉</title>
+  <link rel="stylesheet" href="hoiuc.css" />
+</head>
+<body class="locked">
+  <canvas id="c"></canvas>
+
+  <!-- [ADD] Overlay khoá trang + nút mở timeline -->
+  <div id="boot" class="bootOverlay" role="dialog" aria-modal="true" aria-label="Mở timeline">
+    <div class="bootCard">
+      <div class="bootTitle">Nhấn để bắt đầu</div>
+      <button class="bootBtn" id="unlockBtn" type="button">✨ Mở timeline</button>
+      <div class="bootHint">
+        Trình duyệt thường chặn autoplay, nên cần bấm 1 lần để bật nhạc.
+      </div>
+    </div>
+  </div>
+
+  <!-- [ADD] Nhạc nền MP3 (loop là tùy chọn: muốn tắt loop thì xóa thuộc tính loop) -->
+  <audio id="bgm" src="kiatetdangsang.mp3" preload="auto" loop playsinline></audio>
+
+  <div class="controls">
+    <a class="btn" href="trungtam.html">Trở về</a>
+    <button class="btn" id="soundBtn" type="button">🔇 Âm: Tắt</button>
+    <button class="btn ghost" id="pauseBtn" type="button">⏸ Pause</button>
+    <button class="btn ghost" id="restartBtn" type="button">↻ Restart</button>
+  </div>
+
+  <script src="hoiuc.js"></script>
+</body>
+</html>

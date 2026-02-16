@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sakura Portal 3D</title>
+  <link rel="stylesheet" href="hoano.css" />
+</head>
+<body class="locked">
+  <canvas id="c"></canvas>
+
+  <!-- Nhạc nền (đặt file music.mp3 cùng thư mục) -->
+  <audio id="bgm" src="mahong.mp3" preload="auto" loop></audio>
+
+  <!-- Overlay mở khóa + phát nhạc -->
+  <div id="startOverlay" class="startOverlay">
+    <div class="startCard">
+      <div class="startTitle">🌸 Sakura Portal</div>
+      <div class="startSub">Chạm để mở hiệu ứng & bật nhạc</div>
+      <button id="btnStart" class="startBtn" type="button">▶ Chạm để bắt đầu</button>
+      <div class="startHint">* Nhạc sẽ phát sau khi bạn bấm (theo luật trình duyệt)</div>
+    </div>
+  </div>
+
+  <div class="ui">
+    <div class="btns">
+      <button id="btnBack" class="btn" type="button">↩ Trở về</button>
+      <button id="btnPause" class="btn" type="button">⏸ dừng</button>
+      <button id="btnAuto" class="btn" type="button">🌀xoay tự động: ON</button>
+      <button id="btnMute" class="btn" type="button">🔊 âm thanh: ON</button>
+    </div>
+  </div>
+
+  <script src="hoano.js"></script>
+</body>
+</html>

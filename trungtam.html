@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Đại Sảnh Tết — Lời chúc</title>
+  <link rel="stylesheet" href="trungtam.css">
+</head>
+<body>
+  <!-- 🔊 Nhạc nền (đổi src theo file của bạn) -->
+  <audio id="bgm" src="vansunhuy.mp3" preload="auto" loop></audio>
+
+  <!-- ✅ ENTRY GATE: vào trang là mờ + đứng im, bấm nút mới chạy -->
+  <div class="entry-gate" id="entryGate" aria-hidden="false" role="dialog" aria-modal="true">
+    <button class="entry-btn" id="entryBtn" type="button" aria-label="Khai môn để bắt đầu">
+      <span class="entry-title">Khai Môn</span>
+      <span class="entry-sub"></span>
+    </button>
+    <div class="entry-hint" aria-hidden="true"></div>
+  </div>
+
+  <!-- Background decorations (lightweight) -->
+  <div class="bg-pattern" aria-hidden="true"></div>
+  <div class="stage-lights" aria-hidden="true">
+    <span class="beam beam-left"></span>
+    <span class="beam beam-right"></span>
+  </div>
+
+  <!-- Petals -->
+  <div class="petals" aria-hidden="true"></div>
+
+  <!-- Corner Lanterns (inside frame vibe) -->
+  <div class="lantern lantern-left" aria-hidden="true">
+    <div class="lantern-rope"></div>
+    <div class="lantern-body">
+      <div class="lantern-cap"></div>
+      <div class="lantern-lines"></div>
+      <div class="lantern-tassel"></div>
+    </div>
+  </div>
+
+  <div class="lantern lantern-right" aria-hidden="true">
+    <div class="lantern-rope"></div>
+    <div class="lantern-body">
+      <div class="lantern-cap"></div>
+      <div class="lantern-lines"></div>
+      <div class="lantern-tassel"></div>
+    </div>
+  </div>
+
+  <!-- 💝 Sticky note button -->
+  <button class="love-note" id="loveNoteBtn" type="button" aria-label="Mở ghi chú 💝">
+    <span class="fold" aria-hidden="true"></span>
+    <span class="love-emoji" aria-hidden="true">💝</span>
+    <span class="love-text">Bí mật</span>
+  </button>
+
+  <!-- MAIN FRAME -->
+  <div class="frame" role="main" aria-label="Đại sảnh Tết">
+    <div class="frame-sparkles" aria-hidden="true"></div>
+
+    <header class="title">
+      <div class="title-top">Nghinh Xuân Đại Điện 2026</div>
+      <div class="title-sub">Ấn hạ chư nút dĩ quan lãm</div>
+    </header>
+
+    <div class="inner">
+      <div class="single-screen" aria-label="Màn hình lời chúc">
+        <canvas id="messageCanvas" aria-hidden="false"></canvas>
+        <div class="screen-glow" aria-hidden="true"></div>
+      </div>
+
+      <div class="controls" role="navigation" aria-label="Các hoạt động Tết">
+        <a class="btn" data-key="btn_lixi" href="hoiuc.html">Cáo biệt niên hoa</a>
+        <a class="btn" data-key="btn_phongbao" href="phaohoa.html">Yên hoa dạ khúc</a>
+        <a class="btn" data-key="btn_phaoron" href="hoano.html">Khai hoa niên ký</a>
+      </div>
+
+      <div class="hint" id="progressHint" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="gateModal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+    <div class="modal-card" role="document">
+      <div class="modal-badge">⚠️</div>
+      <div class="modal-title">chưa đủ điều kiện đâu bé ơi</div>
+      <div class="modal-desc">Bấm đủ 3 nút bên dưới rồi quay lại bấm 💝 nha</div>
+      <button class="modal-close" id="modalCloseBtn" type="button">Thoát</button>
+    </div>
+  </div>
+
+  <script src="trungtam.js"></script>
+</body>
+</html>
