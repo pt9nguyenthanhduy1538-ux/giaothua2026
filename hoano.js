@@ -174,6 +174,19 @@
     btnMute.textContent = music.muted ? "🔇 âm thanh: OFF" : "🔊 âm thanh: ON";
   }
 
+  // ---------- FULLSCREEN (THÊM) ----------
+  function goFullscreen(el = document.documentElement) {
+    const fn =
+      el.requestFullscreen ||
+      el.webkitRequestFullscreen ||   // Safari
+      el.msRequestFullscreen;         // old Edge
+    if (!fn) return;
+    try {
+      const p = fn.call(el);
+      if (p && typeof p.catch === "function") p.catch(() => {});
+    } catch {}
+  }
+
   // Giữ lại hàm gọi trong effect (nhưng không dùng SFX nữa)
   function whoosh(){ /* no-op */ }
   function sparkle(){ /* no-op */ }
@@ -695,6 +708,9 @@
 
   // ---------- Start overlay unlock ----------
   function unlockStart(){
+    // (THÊM) bấm là vào toàn màn hình
+    goFullscreen(document.documentElement); // hoặc đổi thành goFullscreen(canvas)
+
     document.body.classList.remove("locked");
     startOverlay?.classList.add("hide");
     playMusic();
