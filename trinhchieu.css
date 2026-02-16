@@ -680,3 +680,25 @@ body.is-locked #app{
   *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
   .film-grain, .tet-motifs{ display:none; }
 }
+/* ===== Force button (bypass) ===== */
+.force-btn{
+  margin-top: 12px;
+  padding: 12px 22px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: linear-gradient(180deg, rgba(255,80,80,1), rgba(170,10,10,1));
+  color: #fff;
+  font-weight: 900;
+  font-size: 16px;
+  letter-spacing: .6px;
+  box-shadow: 0 18px 50px rgba(0,0,0,0.45), 0 0 0 6px rgba(255,120,120,0.06);
+  cursor: pointer;
+}
+.force-btn:hover{ filter: brightness(1.06) contrast(1.06); transform: translateY(-1px); }
+.force-btn:active{ transform: translateY(0) scale(0.99); }
+
+.force-hint{
+  margin-top: 8px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.62);
+}
