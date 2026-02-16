@@ -39,6 +39,24 @@ Có gì pò nói để Duy bùn chug
 Pò chớ để lòng không kể
 Pò ưu tư, Duy sao lơ, vui nổi`;
 
+  // ===== Fullscreen: bật khi bấm Start =====
+  function enterFullscreen() {
+    const el = document.documentElement;
+
+    const req =
+      el.requestFullscreen ||
+      el.webkitRequestFullscreen ||
+      el.msRequestFullscreen;
+
+    if (!req) return;
+
+    try {
+      const p = req.call(el);
+      // tránh lỗi "permission denied" spam console
+      if (p && typeof p.catch === "function") p.catch(() => {});
+    } catch {}
+  }
+
   // ===== Music: bật khi bấm Start =====
   function fadeInVolume(target = 0.9) {
     if (!bgm) return;
@@ -132,7 +150,7 @@ Pò ưu tư, Duy sao lơ, vui nổi`;
     clearTyping();
 
     const {
-      baseDelay = 95,     // tăng lên -> chậm hơn (120, 140...)
+      baseDelay = 95,
       jitter = 55,
       spaceExtra = 30,
       newlineExtra = 260,
@@ -213,8 +231,12 @@ Pò ưu tư, Duy sao lơ, vui nổi`;
 
   // ===== Start Experience =====
   async function startExperience() {
+    // fullscreen phải gọi ngay trong cú click để dễ được phép
+    enterFullscreen();
+
     initKeySound();     // tạo audio context trong user gesture
     await startMusic(); // bật nhạc luôn
+
     body.classList.remove("locked");
     gate.classList.add("hide");
     setTimeout(() => gate.remove(), 380);
